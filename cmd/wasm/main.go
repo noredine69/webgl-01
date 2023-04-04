@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	screenWidth  = 320
-	screenHeight = 240
+	screenWidth  = 800
+	screenHeight = 600
 	maxAngle     = 256
 )
 
@@ -24,25 +24,40 @@ var (
 
 type Game struct {
 	keys []ebiten.Key
+	op   ebiten.DrawImageOptions
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "Hello, World!")
-	fmt.Println("plip ", len(g.keys))
-	var keyStrs []string
-	var keyNames []string
-	for _, k := range g.keys {
-		keyStrs = append(keyStrs, k.String())
+	//fmt.Println("plip ", len(g.keys))
 
-		fmt.Println("touch ", k.String())
-		ebitenutil.DebugPrint(screen, k.String())
-		if name := ebiten.KeyName(k); name != "" {
-			keyNames = append(keyNames, name)
-			ebitenutil.DebugPrint(screen, name)
+	w, h := ebitenImage.Bounds().Dx(), ebitenImage.Bounds().Dy()
+	txTranslation := float64(0)
+	tyTranslation := float64(0)
+	translation := false
+	for _, k := range g.keys {
+		if k == ebiten.KeyArrowLeft {
+			txTranslation = -float64(w) / 2
+			translation = true
+		} else if k == ebiten.KeyArrowRight {
+			txTranslation = float64(w) / 2
+			translation = true
+		}
+		if k == ebiten.KeyArrowDown {
+			tyTranslation = float64(h) / 2
+			translation = true
+		} else if k == ebiten.KeyArrowUp {
+			tyTranslation = -float64(h) / 2
+			translation = true
 		}
 	}
+	if translation {
+		fmt.Println("plip ", txTranslation, tyTranslation, w, h)
+		//g.op.GeoM.Reset()
+		g.op.GeoM.Translate(txTranslation, tyTranslation)
+	}
 
-	//screen.DrawImage(ebitenImage, nil)
+	screen.DrawImage(ebitenImage, &g.op)
 
 }
 func (g *Game) Update() error {
@@ -76,7 +91,8 @@ func init() {
 }
 
 func main() {
-	ebiten.SetWindowSize(640, 480)
+
+	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Hello, World!")
 	if err := ebiten.RunGame(&Game{}); err != nil {
 		log.Fatal(err)
