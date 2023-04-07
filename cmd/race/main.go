@@ -30,7 +30,8 @@ func NewGame() *Game {
 	//library, err := tetra3d.LoadGLTFFile("assets/next.gltf", nil)
 
 	//library, err := tetra3d.LoadGLTFFile("assets/next_toaster.gltf", nil)
-	library, err := tetra3d.LoadGLTFFile("assets/arma.gltf", nil)
+	//library, err := tetra3d.LoadGLTFFile("../../assets/arma.gltf", nil)
+	library, err := tetra3d.LoadGLTFFile("/home/ubuntu/Dev/supervision-apps/webgl-01/assets/arma.gltf", nil)
 
 	if err != nil {
 		panic(err)
